@@ -1,0 +1,63 @@
+services:
+  # Banco principal da API
+  db:
+    image: postgres:15
+    container_name: postgres_db
+    environment:
+      POSTGRES_DB: gerenciador_veiculos
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d gerenciador_veiculos || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # Banco separado para testes
+  db_test:
+    image: postgres:15-alpine
+    container_name: postgres_test_db
+    environment:
+      POSTGRES_DB: gerenciador_veiculos_test
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d gerenciador_veiculos_test || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # Container que roda os TESTES (usa db_test)
+  tests:
+    image: maven:3.8.5-openjdk-17
+    container_name: api_tests
+    working_dir: /app
+    volumes:
+      - ./:/app
+    depends_on:
+      db_test:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: test
+      DB_URL: jdbc:postgresql://db_test:5432/gerenciador_veiculos_test
+      DB_USER: user
+      DB_PASS: password
+    command: ["mvn", "clean", "test"]
+
+  # API em si, usando o banco com init.sql
+  api:
+    build: .
+    container_name: api
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/gerenciador_veiculos
+      DB_USER: user
+      DB_PASS: password
