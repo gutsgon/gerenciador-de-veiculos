@@ -14,6 +14,7 @@ import com.sergipeTec.gerenciador_de_veiculos.rest.dto.CarroCreateDTO;
 import com.sergipeTec.gerenciador_de_veiculos.rest.dto.CarroRequestDTO;
 import com.sergipeTec.gerenciador_de_veiculos.rest.dto.MotoCreateDTO;
 import com.sergipeTec.gerenciador_de_veiculos.rest.dto.MotoRequestDTO;
+import com.sergipeTec.gerenciador_de_veiculos.rest.exception.VeiculoNaoEncontradoException;
 import com.sergipeTec.gerenciador_de_veiculos.service.interfaces.IVeiculoService;
 
 /**
@@ -100,7 +101,7 @@ public class VeiculoService implements IVeiculoService {
     public CarroModel updateCarro(CarroRequestDTO carroDTO){
         Optional<VeiculoModel> veiculo = repository.findById(carroDTO.getId());
         if(veiculo.isEmpty() || !(veiculo.get() instanceof CarroModel)){
-            throw new RuntimeException("Carro não encontrado com o ID: " + carroDTO.getId());
+            throw new VeiculoNaoEncontradoException("Carro não encontrado com o ID: " + carroDTO.getId());
         }
         CarroModel carroModel = (CarroModel) veiculo.get();
         if (carroDTO.getModelo() != null) {
@@ -136,7 +137,7 @@ public class VeiculoService implements IVeiculoService {
     public MotoModel updateMoto(MotoRequestDTO motoDTO){
         Optional<VeiculoModel> veiculo = repository.findById(motoDTO.getId());
         if(veiculo.isEmpty() || !(veiculo.get() instanceof MotoModel)){
-            throw new RuntimeException("Moto não encontrada com o ID: " + motoDTO.getId());
+            throw new VeiculoNaoEncontradoException("Moto não encontrada com o ID: " + motoDTO.getId());
         }
         MotoModel motoModel = (MotoModel) veiculo.get();
         if (motoDTO.getModelo() != null) {
