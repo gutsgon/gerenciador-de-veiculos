@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+ <meta charset="UTF-8" />
+ <title>Gerenciador de Veículos</title>
+ <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<header>
+ <h1>Gerenciador de Veículos</h1>
+ <p>CRUD de carros e motos com filtro por tipo, modelo, cor e ano.</p>
+</header>
+
+<main>
+ <!-- FILTROS -->
+ <!-- FILTROS -->
+<section class="card">
+  <h2>Filtros de busca</h2>
+
+  <!-- adicione a classe form-grid--filters -->
+  <form id="filterForm" class="form-grid form-grid--filters">
+    <div class="form-group">
+      <label for="filtroTipo">Tipo</label>
+      <select id="filtroTipo" name="tipo">
+        <option value="">Todos</option>
+        <option value="CARRO">Carro</option>
+        <option value="MOTO">Moto</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="filtroModelo">Modelo</label>
+      <input type="text" id="filtroModelo" name="modelo" placeholder="Ex.: Civic" />
+    </div>
+
+    <div class="form-group">
+      <label for="filtroCor">Cor</label>
+      <input type="text" id="filtroCor" name="cor" placeholder="Ex.: Preto" />
+    </div>
+
+    <div class="form-group">
+      <label for="filtroAno">Ano</label>
+      <input type="number" id="filtroAno" name="ano" placeholder="Ex.: 2022" />
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Aplicar filtros</button>
+      <button type="button" id="btnLimparFiltros" class="btn btn-secondary">Limpar</button>
+    </div>
+  </form>
+</section>
+
+
+  <!-- LISTAGEM -->
+  <section class="card">
+    <div class="card-header">
+      <h2>Veículos cadastrados</h2>
+      <button id="btnNovoVeiculo" class="btn btn-success">Novo veículo</button>
+    </div>
+
+    <table class="tabela" id="tabelaVeiculos">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Modelo</th>
+        <th>Fabricante</th>
+        <th>Ano</th>
+        <th>Preço</th>
+        <th>Tipo</th>
+        <!-- NOVOS CABEÇALHOS PARA CAMPOS ESPECÍFICOS -->
+        <th>Portas / Cilindrada</th> 
+        <th>Combustível</th>
+        <!-- FIM NOVOS CABEÇALHOS -->
+        <th>Ações</th>
+      </tr>
+      </thead>
+      <tbody>
+      <!-- Linhas preenchidas via JS -->
+      </tbody>
+    </table>
+
+    <p id="estadoLista" class="estado-lista"></p>
+  </section>
+</main>
+
+<!-- 1. MODAL DE FORMULÁRIO / DETALHES -->
+<div id="modalBackdrop" class="modal-backdrop hidden">
+  <div class="modal">
+    <header class="modal-header">
+      <h2 id="modalTitulo">Novo veículo</h2>
+      <button id="btnFecharModal" class="btn btn-ghost">X</button>
+    </header>
+
+    <!-- Conteúdo de Detalhes (Visível apenas ao Detalhar) -->
+    <div id="modalConteudoDetalhes" class="modal-content-details hidden">
+        <!-- Detalhes injetados aqui -->
+    </div>
+
+    <!-- Formulário de Cadastro/Edição -->
+    <form id="veiculoForm" class="form-grid">
+      <!-- Campo escondido para saber se é edição -->
+      <input type="hidden" id="veiculoId" />
+
+      <div class="form-group">
+        <label for="tipoVeiculo">Tipo</label>
+        <select id="tipoVeiculo" required>
+          <option value="">Selecione</option>
+          <option value="CARRO">Carro</option>
+          <option value="MOTO">Moto</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="modelo">Modelo</label>
+        <input type="text" id="modelo" required />
+      </div>
+
+      <div class="form-group">
+        <label for="fabricante">Fabricante</label>
+        <input type="text" id="fabricante" required />
+      </div>
+
+      <div class="form-group">
+        <label for="ano">Ano</label>
+        <input type="number" id="ano" required />
+      </div>
+
+      <div class="form-group">
+        <label for="preco">Preço</label>
+        <input type="number" id="preco" step="0.01" required />
+      </div>
+
+      <div class="form-group">
+        <label for="cor">Cor</label>
+        <input type="text" id="cor" required />
+        </div>
+
+      <!-- CAMPOS ESPECÍFICOS DE CARRO -->
+      <div class="form-group tipo-carro">
+        <label for="quantidadePortas">Qtd. Portas</label>
+        <input type="number" id="quantidadePortas" min="1" />
+      </div>
+
+      <div class="form-group tipo-carro">
+        <label for="tipoCombustivel">Tipo de combustível</label>
+        <select id="tipoCombustivel">
+          <option value="">Selecione</option>
+          <option value="GASOLINA">Gasolina</option>
+          <option value="ETANOL">Etanol</option>
+          <option value="DIESEL">Diesel</option>
+          <option value="FLEX">Flex</option>
+        </select>
+      </div>
+
+      <!-- CAMPO ESPECÍFICO DE MOTO -->
+      <div class="form-group tipo-moto">
+        <label for="cilindrada">Cilindrada</label>
+        <input type="number" id="cilindrada" min="50" />
+      </div>
+        <!-- Placeholder para Moto (manter layout) -->
+        <div class="form-group tipo-moto"></div>
+
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" id="btnSalvarVeiculo">
+          Salvar
+        </button>
+        <button type="button" class="btn btn-secondary" id="btnCancelarVeiculo">
+          Cancelar
+        </button>
+      </div>
+    </form>
+
+    <div id="mensagemErro" class="mensagem-erro"></div>
+  </div>
+</div>
+
+<!-- 2. MODAL DE CONFIRMAÇÃO (Para Excluir) -->
+<div id="confirmModal" class="modal-backdrop hidden">
+    <div class="modal modal-confirm">
+        <div class="modal-body">
+            <p id="confirmText" class="font-semibold"></p>
+            <div class="form-actions confirm-actions">
+                <button id="confirmCancel" class="btn btn-secondary">Não</button>
+                <button id="confirmOk" class="btn btn-danger">Sim, Excluir</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 3. TOAST para Mensagens de Erro/Sucesso (Substituindo alert()) -->
+<div id="alertMessage" class="toast hidden">
+    <!-- Mensagem injetada aqui -->
+</div>
+
+
+<script src="app.js"></script>
+</body>
+</html>
