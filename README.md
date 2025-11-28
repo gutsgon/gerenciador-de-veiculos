@@ -17,6 +17,7 @@ Este projeto foi desenvolvido como solução para o desafio técnico descrito no
 - **Maven**
 - **JUnit 5 + Mockito**
 - **Docker & Docker Compose**
+- **Front-end (HTML/CSS/JS Vanilla)**
 
 ---
 
@@ -28,6 +29,10 @@ gerenciador-de-veiculos/
 │   ├── main/
 │   │   ├── java/com/sergipeTec/gerenciador_de_veiculos/...
 │   │   └── resources/
+|   |       |── static/
+|   |       |   |── app.js
+|   |       |   |── index.html
+|   |       |   |── style.css
 │   │       └── application.properties
 │   └── test/
 │       ├── java/com/sergipeTec/gerenciador_de_veiculos/...
@@ -44,6 +49,9 @@ gerenciador-de-veiculos/
 
 - `init.sql` → script usado pelo container **principal** do PostgreSQL (produção/dev).
 - `schema.sql` e `data.sql` (em `src/test/resources`) → usados pelo **profile de teste** (`test`) para montar o banco em memória/disco isolado para os testes de integração.
+- `front/` → interface web simples em HTML/CSS/JS consumindo a API via `fetch()`.
+
+> Se você não tiver a pasta `front/`, ajuste o trecho acima para refletir onde estão seus arquivos `index.html`, `style.css` e `app.js`.
 
 ---
 
@@ -128,6 +136,34 @@ Se quiser limpar volumes também:
 ```bash
 docker-compose down -v
 ```
+
+---
+
+## 🖥️ Front-end (UI) — Como acessar
+
+Este repositório inclui uma interface web simples (**HTML/CSS/JS Vanilla**) para consumo da API.
+
+### Como abrir
+1. Suba a API (via Docker ou localmente).
+2. Abra o arquivo `front/index.html` no navegador.
+
+### Configuração da URL da API
+No arquivo `front/app.js`, a URL base está definida em:
+
+```js
+const API_BASE = "http://localhost:8080";
+```
+
+Se você rodar a API em outra porta/host, atualize esse valor.
+
+### Exceções e observações do Front
+- A UI é **estática** (não há servidor front). Por isso, o acesso é feito abrindo o `index.html` diretamente.
+- Como a UI consome a API por `fetch()` em `http://localhost:8080`, pode haver **restrição de CORS** dependendo do seu navegador/configuração.
+  - Se isso acontecer, execute a UI através de um servidor local simples (ex.: `Live Server` do VSCode) ou habilite CORS na API.
+- Ajuste de layout: foi aplicada uma correção de **grid/spacing** no formulário de filtros para evitar campos “espalhados” em telas largas:
+  - o formulário de filtros usa a classe extra `form-grid--filters`
+  - os botões (`form-actions`) ocupam a linha toda (`grid-column: 1 / -1`)
+  - foi adicionada a classe global `.hidden { display:none !important; }` para suportar corretamente alternâncias de modal/detalhes usadas no JavaScript.
 
 ---
 
@@ -248,17 +284,9 @@ Este repositório segue as orientações do desafio:
 Sugestão de fluxo local:
 
 ```bash
-# adicionar arquivos
 git add .
-
-# criar commit descritivo
 git commit -m "feat: implementar CRUD básico de veículos"
 
-# configurar remoto (apenas na primeira vez)
 git remote add origin https://github.com/SEU_USUARIO/gerenciador-de-veiculos.git
-
-# enviar branch principal
 git push -u origin main
 ```
-
----
