@@ -1,0 +1,21 @@
+services:
+  - type: pserv
+    name: db
+    env: docker
+    dockerContext: .
+    dockerfilePath: ./docker/Dockerfile.db
+    plan: starter
+
+  - type: web
+    name: api
+    env: docker
+    dockerContext: .
+    dockerfilePath: ./Dockerfile
+    plan: starter
+    envVars:
+      - key: DB_URL
+        value: jdbc:postgresql://db:5432/gerenciador_veiculos
+      - key: DB_USER
+        value: user
+      - key: DB_PASS
+        value: password
