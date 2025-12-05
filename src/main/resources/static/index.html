@@ -12,12 +12,10 @@
 </header>
 
 <main>
- <!-- FILTROS -->
- <!-- FILTROS -->
 <section class="card">
   <h2>Filtros de busca</h2>
 
-  <!-- adicione a classe form-grid--filters -->
+
   <form id="filterForm" class="form-grid form-grid--filters">
     <div class="form-group">
       <label for="filtroTipo">Tipo</label>
@@ -51,7 +49,7 @@
 </section>
 
 
-  <!-- LISTAGEM -->
+
   <section class="card">
     <div class="card-header">
       <h2>Veículos cadastrados</h2>
@@ -65,17 +63,15 @@
         <th>Modelo</th>
         <th>Fabricante</th>
         <th>Ano</th>
+        <th>Cor</th>
         <th>Preço</th>
         <th>Tipo</th>
-        <!-- NOVOS CABEÇALHOS PARA CAMPOS ESPECÍFICOS -->
         <th>Portas / Cilindrada</th> 
         <th>Combustível</th>
-        <!-- FIM NOVOS CABEÇALHOS -->
         <th>Ações</th>
       </tr>
       </thead>
       <tbody>
-      <!-- Linhas preenchidas via JS -->
       </tbody>
     </table>
 
@@ -83,7 +79,6 @@
   </section>
 </main>
 
-<!-- 1. MODAL DE FORMULÁRIO / DETALHES -->
 <div id="modalBackdrop" class="modal-backdrop hidden">
   <div class="modal">
     <header class="modal-header">
@@ -91,14 +86,10 @@
       <button id="btnFecharModal" class="btn btn-ghost">X</button>
     </header>
 
-    <!-- Conteúdo de Detalhes (Visível apenas ao Detalhar) -->
-    <div id="modalConteudoDetalhes" class="modal-content-details hidden">
-        <!-- Detalhes injetados aqui -->
-    </div>
 
-    <!-- Formulário de Cadastro/Edição -->
+    <div id="modalConteudoDetalhes" class="modal-content-details hidden"></div>
+
     <form id="veiculoForm" class="form-grid">
-      <!-- Campo escondido para saber se é edição -->
       <input type="hidden" id="veiculoId" />
 
       <div class="form-group">
@@ -135,7 +126,7 @@
         <input type="text" id="cor" required />
         </div>
 
-      <!-- CAMPOS ESPECÍFICOS DE CARRO -->
+
       <div class="form-group tipo-carro">
         <label for="quantidadePortas">Qtd. Portas</label>
         <input type="number" id="quantidadePortas" min="1" />
@@ -152,12 +143,12 @@
         </select>
       </div>
 
-      <!-- CAMPO ESPECÍFICO DE MOTO -->
+
       <div class="form-group tipo-moto">
         <label for="cilindrada">Cilindrada</label>
         <input type="number" id="cilindrada" min="50" />
       </div>
-        <!-- Placeholder para Moto (manter layout) -->
+
         <div class="form-group tipo-moto"></div>
 
 
@@ -175,7 +166,7 @@
   </div>
 </div>
 
-<!-- 2. MODAL DE CONFIRMAÇÃO (Para Excluir) -->
+
 <div id="confirmModal" class="modal-backdrop hidden">
     <div class="modal modal-confirm">
         <div class="modal-body">
@@ -188,9 +179,7 @@
     </div>
 </div>
 
-<!-- 3. TOAST para Mensagens de Erro/Sucesso (Substituindo alert()) -->
 <div id="alertMessage" class="toast hidden">
-    <!-- Mensagem injetada aqui -->
 </div>
 
 
