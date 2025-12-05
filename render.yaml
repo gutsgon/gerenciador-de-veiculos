@@ -1,11 +1,10 @@
-services:
-  - type: pserv
-    name: db
-    env: docker
-    dockerContext: .
-    dockerfilePath: ./docker/Dockerfile.db
+databases:
+  - name: gerenciador-veiculos-db
+    databaseName: gerenciador_veiculos
+    user: user
     plan: free
 
+services:
   - type: web
     name: api
     env: docker
@@ -13,9 +12,20 @@ services:
     dockerfilePath: ./Dockerfile
     plan: free
     envVars:
-      - key: DB_URL
-        value: jdbc:postgresql://db:5432/gerenciador_veiculos
-      - key: DB_USER
-        value: user
-      - key: DB_PASS
-        value: password
+      # Sobrescreve spring.datasource.url
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: gerenciador-veiculos-db
+          property: connectionString
+
+      # Sobrescreve spring.datasource.username
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: gerenciador-veiculos-db
+          property: user
+
+      # Sobrescreve spring.datasource.password
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: gerenciador-veiculos-db
+          property: password
