@@ -41,15 +41,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const camposMoto = document.querySelectorAll(".tipo-moto");
 
     let editando = false;
-    let tipoOriginalEdicao = null; // CARRO ou MOTO do registro que está sendo editado
+    let tipoOriginalEdicao = null;
+    
 
-    // --- FUNÇÕES DE SUBSTITUIÇÃO DE ALERT/CONFIRM (Obrigatório) ---
-
-    /**
-     * Exibe uma mensagem de toast customizada no canto superior direito.
-     * @param {string} message A mensagem a ser exibida.
-     * @param {string} type 'success' ou 'error'
-     */
+    
     function showAlert(message, type = 'error') {
         alertMessage.textContent = message;
         alertMessage.classList.remove('error', 'success');
@@ -63,11 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 5000);
     }
 
-    /**
-     * Exibe um modal de confirmação customizado.
-     * @param {string} message A pergunta de confirmação.
-     * @returns {Promise<boolean>} Retorna true se confirmado, false se cancelado.
-     */
+    
     function showConfirm(message) {
         return new Promise(resolve => {
             confirmText.textContent = message;
@@ -93,7 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    // --- Helper para tratar respostas da API com JSON de erro ---
+   
     async function tratarRespostaOuLancar(resp) {
         if (resp.ok) {
             return resp;
@@ -102,27 +93,23 @@ document.addEventListener("DOMContentLoaded", () => {
         let mensagem = `Erro da API: ${resp.status}`;
 
         try {
-            // tenta ler JSON no formato { message: "...", ... }
             const erroBody = await resp.json();
             if (erroBody && erroBody.message) {
                 mensagem = erroBody.message;
             }
         } catch (e) {
-            // se não for JSON, ignora e mantém mensagem padrão
             try {
                 const txt = await resp.text();
                 if (txt) {
                     mensagem = `${mensagem} - ${txt}`;
                 }
             } catch (_) {
-                // ignora mesmo
             }
         }
 
         throw new Error(mensagem);
     }
 
-    // ---- Helpers de UI ----
     function abrirModal(titulo, isDetail = false) {
         modalTitulo.textContent = titulo;
         veiculoForm.classList.toggle('hidden', isDetail);
@@ -149,19 +136,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
         camposCarro.forEach(el => {
             el.style.display = tipo === "CARRO" ? "flex" : "none";
-            // Define 'required' nos campos se o tipo for CARRO
             el.querySelectorAll('input, select').forEach(input => input.required = (tipo === "CARRO"));
         });
 
         camposMoto.forEach(el => {
             el.style.display = tipo === "MOTO" ? "flex" : "none";
-            // Define 'required' nos campos se o tipo for MOTO
             el.querySelectorAll('input, select').forEach(input => input.required = (tipo === "MOTO"));
         });
     }
 
     campoTipo.addEventListener("change", () => {
-        // Se estiver em edição, não deixa trocar tipo
         if (editando && tipoOriginalEdicao) {
             campoTipo.value = tipoOriginalEdicao;
             return;
@@ -182,7 +166,6 @@ document.addEventListener("DOMContentLoaded", () => {
         abrirModal("Novo veículo");
     });
 
-    // ---- Carregar lista (sempre GET /veiculos e filtro no front) ----
     async function carregarVeiculos() {
         estadoLista.textContent = "Carregando veículos...";
         tabelaBody.innerHTML = "";
@@ -197,7 +180,6 @@ document.addEventListener("DOMContentLoaded", () => {
             await tratarRespostaOuLancar(resp);
             let data = await resp.json();
 
-            // Aplica filtros no front (mantendo a lógica original)
             if (filtroTipo) {
                 data = data.filter(v => {
                     const tipo = v.tipo_veiculo || v.tipoVeiculo;
@@ -231,9 +213,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 const tipoVeiculo = v.tipo_veiculo || v.tipoVeiculo || "-";
                 const tr = document.createElement("tr");
 
-                // Lógica para obter os campos específicos para exibição na tabela
-                let esp1 = "-"; // Porta / Cilindrada
-                let esp2 = "-"; // Combustível
+                let esp1 = "-"; 
+                let esp2 = "-"; 
 
                 if (tipoVeiculo === "CARRO") {
                     esp1 = v.quantidadePortas ? `${v.quantidadePortas} portas` : "-";
@@ -242,13 +223,13 @@ document.addEventListener("DOMContentLoaded", () => {
                     esp1 = v.cilindrada ? `${v.cilindrada} cc` : "-";
                     esp2 = "-"; 
                 }
-                // Fim da Lógica dos campos específicos
 
                 tr.innerHTML = `
                     <td>${v.id}</td>
                     <td>${v.modelo}</td>
                     <td>${v.fabricante}</td>
                     <td>${v.ano}</td>
+                    <td>${v.cor || '-'}</td>
                     <td>${(v.preco ?? 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</td>
                     <td>${tipoVeiculo}</td>
                     <td class="campo-especifico">${esp1}</td>
@@ -284,7 +265,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // ---- Detalhar (Usa modal customizado) ----
     function mostrarDetalhes(v) {
         const tipo = v.tipo_veiculo || v.tipoVeiculo;
         
@@ -323,7 +303,6 @@ document.addEventListener("DOMContentLoaded", () => {
         abrirModal(`Detalhes do Veículo #${v.id}`, true);
     }
 
-    // ---- Abrir modal em modo edição ----
     function abrirEdicao(v) {
         const tipo = v.tipo_veiculo || v.tipoVeiculo;
 
@@ -337,7 +316,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         campoId.value = v.id;
         campoTipo.value = tipo;
-        campoTipo.disabled = true; // NÃO deixar trocar CARRO ↔ MOTO
+        campoTipo.disabled = true; 
         atualizarCamposEspecificos();
 
         campoModelo.value = v.modelo;
@@ -359,7 +338,6 @@ document.addEventListener("DOMContentLoaded", () => {
         abrirModal(`Editar ${tipo === "CARRO" ? "carro" : "moto"} #${v.id}`);
     }
 
-    // ---- Salvar (criar ou atualizar) ----
     veiculoForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         mensagemErro.textContent = "";
@@ -372,7 +350,6 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        // Validação básica de campos numéricos
         const precoNum = Number(campoPreco.value);
         const anoNum = Number(campoAno.value);
         if (precoNum <= 0 || Number.isNaN(anoNum)) {
@@ -415,12 +392,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
             if (id) {
-                // PATCH /veiculos/carros com CarroRequestDTO
                 url = `${API_BASE}/veiculos/carros`;
                 method = "PATCH";
                 payload.id = Number(id);
             } else {
-                // POST /veiculos/carros com CarroCreateDTO
                 url = `${API_BASE}/veiculos/carros`;
                 method = "POST";
             }
@@ -444,12 +419,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
             if (id) {
-                // PATCH /veiculos/motos com MotoRequestDTO
                 url = `${API_BASE}/veiculos/motos`;
                 method = "PATCH";
                 payload.id = Number(id);
             } else {
-                // POST /veiculos/motos com MotoCreateDTO
                 url = `${API_BASE}/veiculos/motos`;
                 method = "POST";
             }
@@ -480,7 +453,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // ---- Excluir (Usa modal customizado) ----
     async function excluirVeiculo(id) {
         const confirmado = await showConfirm(`Confirma excluir o veículo ID ${id}?`);
         if (!confirmado) return;
@@ -500,7 +472,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // ---- Filtros ----
     filterForm.addEventListener("submit", (e) => {
         e.preventDefault();
         carregarVeiculos();
@@ -511,6 +482,5 @@ document.addEventListener("DOMContentLoaded", () => {
         carregarVeiculos();
     });
 
-    // Carrega na entrada
     carregarVeiculos();
 });
