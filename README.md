@@ -80,8 +80,15 @@ A aplicação trabalha com **três tabelas principais**:
 
 - [Docker](https://www.docker.com/)
 - [Docker Compose](https://docs.docker.com/compose/)
+- [Git](https://git-scm.com/install/windows)
 
-### 2. Subir tudo (banco + testes + API)
+### 2. Clone o repositório 
+```bash
+git clone
+https://github.com/gutsgon/gerenciador-de-veiculos.git
+```
+
+### 3. Subir tudo (banco + testes + API)
 
 Na raiz do projeto:
 
@@ -112,7 +119,7 @@ O que esse comando faz:
 > docker-compose up --build db api
 > ```
 
-### 3. Ver logs (incluindo testes)
+### 4. Ver logs (incluindo testes)
 
 ```bash
 # acompanhar tudo em tempo real
@@ -125,7 +132,7 @@ docker-compose logs -f tests
 docker-compose logs -f api
 ```
 
-### 4. Parar e remover containers
+### 5. Parar e remover containers
 
 ```bash
 docker-compose down
