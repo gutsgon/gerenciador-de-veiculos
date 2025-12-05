@@ -12,19 +12,16 @@ services:
     dockerfilePath: ./Dockerfile
     plan: free
     envVars:
-      # Sobrescreve spring.datasource.url
       - key: SPRING_DATASOURCE_URL
         fromDatabase:
           name: gerenciador-veiculos-db
           property: connectionString
 
-      # Sobrescreve spring.datasource.username
       - key: SPRING_DATASOURCE_USERNAME
         fromDatabase:
           name: gerenciador-veiculos-db
           property: user
 
-      # Sobrescreve spring.datasource.password
       - key: SPRING_DATASOURCE_PASSWORD
         fromDatabase:
           name: gerenciador-veiculos-db
