@@ -4,14 +4,14 @@ services:
     env: docker
     dockerContext: .
     dockerfilePath: ./docker/Dockerfile.db
-    plan: starter
+    plan: free
 
   - type: web
     name: api
     env: docker
     dockerContext: .
     dockerfilePath: ./Dockerfile
-    plan: starter
+    plan: free
     envVars:
       - key: DB_URL
         value: jdbc:postgresql://db:5432/gerenciador_veiculos
