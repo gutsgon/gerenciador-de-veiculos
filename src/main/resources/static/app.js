@@ -1,5 +1,6 @@
-// app.js
-const API_BASE = "http://localhost:8080"; // sua API raiz
+const isLocalHost = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+
+const API_BASE = isLocalHost ? 'http://localhost:8080' : window.location.origin;
 
 document.addEventListener("DOMContentLoaded", () => {
     const tabelaBody = document.querySelector("#tabelaVeiculos tbody");
